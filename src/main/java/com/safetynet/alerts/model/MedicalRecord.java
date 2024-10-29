@@ -8,8 +8,17 @@ import java.util.List;
 public class MedicalRecord {
     private String firstName;
     private String lastName;
-    private String birthDate;
+    private String birthdate;
     private List<String> medications;
     private List<String> allergies;
 
+    public MedicalRecord(){}
+
+    public MedicalRecord(String firstName, String lastName, String birthDate, List<String> medications, List<String> allergies) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthdate = birthDate;
+        this.medications = medications;
+        this.allergies = allergies;
+    }
 }
