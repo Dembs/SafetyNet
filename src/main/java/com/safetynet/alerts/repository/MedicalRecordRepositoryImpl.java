@@ -1,6 +1,7 @@
 package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.service.DataLoader;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -10,7 +11,11 @@ import java.util.Optional;
 @Repository
 public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
 
-    private List<MedicalRecord> medicalrecords = new ArrayList<>();
+    private List<MedicalRecord> medicalrecords ;
+
+    public MedicalRecordRepositoryImpl (DataLoader dataLoader){
+        this.medicalrecords = new ArrayList<>(dataLoader.getData().getMedicalrecords());
+    }
 
     @Override
     public List<MedicalRecord>findAll(){
@@ -28,12 +33,14 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
 
     @Override
     public void save(MedicalRecord medicalRecord){
+
         medicalrecords.add(medicalRecord);
     }
 
     @Override
-    public void delete(MedicalRecord medicalRecord){
-        medicalrecords.remove(medicalRecord);
+    public void delete(MedicalRecord deletedMedicalRecord){
+        findMedicalRecord(deletedMedicalRecord.getFirstName(), deletedMedicalRecord.getLastName())
+                .ifPresent(medicalRecord -> medicalrecords.remove(medicalRecord));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.service.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FireStationRepositoryImplTest {
 
     private FireStationRepository fireStationRepository;
+    private DataLoader dataLoader;
 
     @BeforeEach
     public void setUp(){
-        fireStationRepository = new FireStationRepositoryImpl();
+        fireStationRepository = new FireStationRepositoryImpl(dataLoader);
     }
     @Test
     void findAll() {

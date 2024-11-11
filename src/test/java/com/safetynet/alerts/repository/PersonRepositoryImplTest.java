@@ -1,6 +1,7 @@
 package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.service.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PersonRepositoryImplTest {
 
     private PersonRepositoryImpl personRepository;
+    private DataLoader dataLoader;
 
     @BeforeEach
     public void setUp() {
-        personRepository = new PersonRepositoryImpl();
+        personRepository = new PersonRepositoryImpl(dataLoader);
     }
 
     @Test

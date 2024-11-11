@@ -1,6 +1,7 @@
 package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.service.DataLoader;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,7 +10,11 @@ import java.util.Optional;
 
 @Repository
 public class FireStationRepositoryImpl implements FireStationRepository {
-    private List<FireStation> fireStations = new ArrayList<>();
+    private List<FireStation> fireStations ;
+
+    public FireStationRepositoryImpl(DataLoader dataLoader){
+        this.fireStations = new ArrayList<>(dataLoader.getData().getFirestations());
+    }
 
     @Override
     public List<FireStation>findAll(){

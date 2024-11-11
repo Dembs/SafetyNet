@@ -17,6 +17,9 @@ public class DataLoader {
     public void loadData() {
         try {
             this.data = mapper.readValue(new File("src/main/resources/data.json"), Data.class);
+            System.out.println("Data loaded: " + data.getPersons().size() + " persons loaded.");
+            System.out.println("Data loaded: " + data.getFirestations().size() + " fire stations loaded.");
+            System.out.println("Data loaded: " + data.getMedicalrecords().size() + " medical records loaded.");
         } catch (IOException e) {
             e.printStackTrace();
         }

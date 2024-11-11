@@ -1,6 +1,7 @@
 package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.service.DataLoader;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,7 +10,11 @@ import java.util.Optional;
 
 @Repository
 public class PersonRepositoryImpl implements PersonRepository {
-    private List<Person> persons = new ArrayList<>();
+    private List<Person> persons;
+
+    public PersonRepositoryImpl(DataLoader dataLoader) {
+        this.persons = new ArrayList<>(dataLoader.getData().getPersons());
+    }
 
     @Override
     public List<Person> findAll() {
@@ -29,8 +34,9 @@ public class PersonRepositoryImpl implements PersonRepository {
     }
 
     @Override
-    public void delete(Person person) {
-        persons.remove(person);
+    public void delete(Person deletedPerson) {
+        findPerson(deletedPerson.getFirstName(), deletedPerson.getLastName())
+                .ifPresent(person -> persons.remove(person));
     }
     @Override
     public void update(Person updatedPerson) {
