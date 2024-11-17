@@ -11,4 +11,5 @@ public interface PersonRepository {
     void update(Person person);
     void save(Person person);
     void delete(Person person);
+    List<Person> findPersonsByAddress(String address);
 }

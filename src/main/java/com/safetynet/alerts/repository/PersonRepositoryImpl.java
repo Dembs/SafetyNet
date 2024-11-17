@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @Repository
 public class PersonRepositoryImpl implements PersonRepository {
     private List<Person> persons;
@@ -49,5 +50,11 @@ public class PersonRepositoryImpl implements PersonRepository {
                     personToUpdate.setPhone(updatedPerson.getPhone());
                     personToUpdate.setEmail(updatedPerson.getEmail());
                 });
+    }
+
+    @Override
+    public List<Person> findPersonsByAddress(String address){
+        return persons.stream().filter(person -> person.getAddress().equals(address))
+                .toList();
     }
 }

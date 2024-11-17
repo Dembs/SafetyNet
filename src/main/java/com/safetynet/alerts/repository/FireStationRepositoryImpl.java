@@ -22,8 +22,11 @@ public class FireStationRepositoryImpl implements FireStationRepository {
     }
 
     @Override
-    public Optional<FireStation>findByAdress(String adress){
-        return fireStations.stream().filter(fireStation -> fireStation.getAddress().equals(adress)).findFirst();
+    public Optional<FireStation> findByAddress(String address){
+        return fireStations.stream()
+                           .filter(fireStation -> fireStation.getAddress()
+                                                             .equals(address))
+                           .findFirst();
     }
 
     @Override
@@ -38,9 +41,18 @@ public class FireStationRepositoryImpl implements FireStationRepository {
 
     @Override
     public void update(FireStation updatedFireStation){
-        findByAdress(updatedFireStation.getAddress())
+        findByAddress(updatedFireStation.getAddress())
                 .ifPresent(stationToUpdate -> {
                     stationToUpdate.setStation(updatedFireStation.getStation());
                 } );
+    }
+
+    @Override
+    public Optional<List<String>> findAddressByStationNumber(String stationNumber) {
+        List<String> addresses = fireStations.stream()
+                                             .filter(fireStation -> fireStation.getStation().equals(stationNumber))
+                                             .map(FireStation::getAddress)
+                                             .toList();
+        return Optional.ofNullable(addresses.isEmpty() ? null : addresses);
     }
 }

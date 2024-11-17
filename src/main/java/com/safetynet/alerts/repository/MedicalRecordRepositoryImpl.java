@@ -55,4 +55,5 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
                 );
 
     }
+
 }

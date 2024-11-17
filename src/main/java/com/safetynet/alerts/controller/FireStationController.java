@@ -1,22 +1,21 @@
 package com.safetynet.alerts.controller;
 import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FireStationRepository;
-import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.service.DataLoader;
+import com.safetynet.alerts.service.FireStationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/firestation")
 public class FireStationController {
-
-    private final FireStationRepository fireStationRepository;
-
-    public FireStationController(FireStationRepository fireStationRepository) {
-        this.fireStationRepository = fireStationRepository;
-    }
+    @Autowired
+    private FireStationRepository fireStationRepository;
+    @Autowired
+    private FireStationService fireStationService;
 
     // Endpoint to get all fireStations
     @GetMapping
@@ -43,5 +42,11 @@ public class FireStationController {
     public String updateOnePerson(@RequestBody FireStation fireStation){
         fireStationRepository.update(fireStation);
         return  "Fire Station updated successfully";
+    }
+
+    //Endpoint to get a list of person per station number
+    @GetMapping(params = "stationNumber")
+    public Map<String, Object> getPersonsByStation(@RequestParam String stationNumber) {
+        return fireStationService.getPersonsByStation(stationNumber);
     }
 }
