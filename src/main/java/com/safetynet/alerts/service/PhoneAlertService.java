@@ -2,12 +2,13 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.PersonRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class PhoneAlertService {
 
@@ -18,13 +19,28 @@ public class PhoneAlertService {
     private PersonRepository personRepository;
 
     public List<String> getPhoneNumbersByFireStation(String fireStationNumber) {
+        log.info("Fetching phone numbers for fire station number: {}", fireStationNumber);
 
         List<String> addresses = fireStationRepository.findAddressByStationNumber(fireStationNumber)
-                                                      .orElseThrow(() -> new IllegalArgumentException("Invalid fire station number"));
+                                                      .orElseThrow(() -> {
+                                                          log.error("Invalid fire station number: {}", fireStationNumber);
+                                                          return new IllegalArgumentException("Invalid fire station number");
+                                                      });
 
-        return addresses.stream()
-                        .flatMap(address -> personRepository.findPersonsByAddress(address).stream())
-                        .map(person -> person.getPhone())
-                        .toList();
+        log.debug("Found {} addresses for fire station number {}: {}", addresses.size(), fireStationNumber, addresses);
+
+        List<String> phoneNumbers = addresses.stream()
+                                             .flatMap(address -> {
+                                                 log.debug("Fetching persons at address: {}", address);
+                                                 return personRepository.findPersonsByAddress(address).stream();
+                                             })
+                                             .map(person -> {
+                                                 log.debug("Extracting phone number for person: {}", person);
+                                                 return person.getPhone();
+                                             })
+                                             .toList();
+
+        log.info("Retrieved {} phone numbers for fire station number {}", phoneNumbers.size(), fireStationNumber);
+        return phoneNumbers;
     }
 }

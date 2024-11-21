@@ -2,11 +2,12 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/person")
 public class PersonController {
@@ -17,30 +18,35 @@ public class PersonController {
         this.personRepository = personRepository;
     }
 
-    // Endpoint to get all persons
     @GetMapping
     public List<Person> getAllPersons() {
-        return personRepository.findAll();
+        log.info("Received request to fetch all persons.");
+        List<Person> persons = personRepository.findAll();
+        log.info("Fetched {} persons.", persons.size());
+        return persons;
     }
 
-    //Endpoint to add one person
     @PostMapping
-    public String addOnePerson(@RequestBody Person person){
-         personRepository.save(person);
-         return "Person added successfully!";
+    public String addOnePerson(@RequestBody Person person) {
+        log.info("Received request to add a new person: {}", person);
+        personRepository.save(person);
+        log.info("Person added successfully: {} {}", person.getFirstName(), person.getLastName());
+        return "Person added successfully!";
     }
 
-    //Endpoint to delete one person
     @DeleteMapping
-    public String deleteOnePerson(@RequestBody Person person){
+    public String deleteOnePerson(@RequestBody Person person) {
+        log.info("Received request to delete person: {}", person);
         personRepository.delete(person);
+        log.info("Person deleted successfully: {} {}", person.getFirstName(), person.getLastName());
         return "Person deleted successfully";
     }
 
-    //Endpoint to update one person
     @PutMapping
-    public String updateOnePerson(@RequestBody Person person){
+    public String updateOnePerson(@RequestBody Person person) {
+        log.info("Received request to update person: {}", person);
         personRepository.update(person);
-        return  "Person updated successfully";
+        log.info("Person updated successfully: {} {}", person.getFirstName(), person.getLastName());
+        return "Person updated successfully";
     }
 }
