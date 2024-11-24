@@ -1,6 +1,6 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.PersonInfoDTO;
+import com.safetynet.alerts.dto.FireStationInfoDTO;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FireStationRepository;
@@ -39,8 +39,7 @@ class FireStationServiceTest {
     }
 
     @Test
-    void getPersonsByStation() {
-        // Mock des données
+    void getPersonsByStationTest() {
         String stationNumber = "1";
         List<String> addresses = List.of("1509 Culver St");
         List<Person> persons = List.of(
@@ -51,26 +50,21 @@ class FireStationServiceTest {
         MedicalRecord medicalRecord1 = new MedicalRecord("John", "Boyd", "03/06/1984", List.of(), List.of());
         MedicalRecord medicalRecord2 = new MedicalRecord("Jacob", "Boyd", "03/06/2010", List.of(), List.of());
 
-        // Mock des appels
         when(fireStationRepository.findAddressByStationNumber(stationNumber)).thenReturn(Optional.of(addresses));
         when(personRepository.findPersonsByAddress("1509 Culver St")).thenReturn(persons);
         when(medicalRecordRepository.findMedicalRecord("John", "Boyd")).thenReturn(Optional.of(medicalRecord1));
         when(medicalRecordRepository.findMedicalRecord("Jacob", "Boyd")).thenReturn(Optional.of(medicalRecord2));
 
-        // Exécution
         Map<String, Object> result = fireStationService.getPersonsByStation(stationNumber);
 
-        // Vérifications
         assertEquals(1, result.get("adults"));
         assertEquals(1, result.get("children"));
 
-        @SuppressWarnings("unchecked")
-        List<PersonInfoDTO> personsInfo = (List<PersonInfoDTO>) result.get("persons");
+        List<FireStationInfoDTO> personsInfo = (List<FireStationInfoDTO>) result.get("persons");
         assertEquals(2, personsInfo.size());
         assertEquals("John", personsInfo.get(0).getFirstName());
         assertEquals("Jacob", personsInfo.get(1).getFirstName());
 
-        // Vérifier les interactions
         verify(fireStationRepository, times(1)).findAddressByStationNumber(stationNumber);
         verify(personRepository, times(1)).findPersonsByAddress("1509 Culver St");
         verify(medicalRecordRepository, times(1)).findMedicalRecord("John", "Boyd");

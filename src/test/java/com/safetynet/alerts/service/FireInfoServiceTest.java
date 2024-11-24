@@ -40,7 +40,7 @@ class FireInfoServiceTest {
     }
 
     @Test
-    void getResidentsByAddress() {
+    void getResidentsByAddressTest() {
         String address = "1509 Culver St";
         String fireStationNumber = "1";
 

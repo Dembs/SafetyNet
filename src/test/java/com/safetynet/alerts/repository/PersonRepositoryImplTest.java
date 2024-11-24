@@ -24,10 +24,8 @@ public class PersonRepositoryImplTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialisation des mocks
         MockitoAnnotations.openMocks(this);
 
-        // Mock de Data
         Data mockData = new Data();
         List<Person> mockPersons = Arrays.asList(
                 new Person("John", "Boyd", "1509 Culver St", "Culver", 97451, "841-874-6512", "jaboyd@email.com"),
@@ -91,5 +89,19 @@ public class PersonRepositoryImplTest {
         assertEquals(2, personsAtAddress.size());
         assertTrue(personsAtAddress.stream().anyMatch(person -> person.getFirstName().equals("John")));
         assertTrue(personsAtAddress.stream().anyMatch(person -> person.getFirstName().equals("Jane")));
+    }
+    @Test
+    public void findPersonsByCityTest() {
+        List<Person> personsInCulver = personRepository.findPersonsByCity("Culver");
+        assertEquals(2, personsInCulver.size());
+        assertTrue(personsInCulver.stream().anyMatch(person -> person.getFirstName().equals("John")));
+        assertTrue(personsInCulver.stream().anyMatch(person -> person.getFirstName().equals("Jane")));
+    }
+
+    @Test
+    public void findPersonsByLastNameTest() {
+        List<Person> personsWithLastNameBoyd = personRepository.findPersonsByLastName("Boyd");
+        assertEquals(1, personsWithLastNameBoyd.size());
+        assertTrue(personsWithLastNameBoyd.stream().anyMatch(person -> person.getFirstName().equals("John")));
     }
 }

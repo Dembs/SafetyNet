@@ -33,7 +33,7 @@ class PhoneAlertServiceTest {
     }
 
     @Test
-    void getPhoneNumbersByFireStation() {
+    void getPhoneNumbersByFireStationTest() {
 
         String fireStationNumber = "1";
         List<String> addresses = List.of("1509 Culver St", "29 13th Ave");

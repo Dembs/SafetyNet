@@ -5,7 +5,6 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,7 +34,7 @@ class MedicalRecordControllerTest {
     }
 
     @Test
-    void getAllMedicalRecords_ShouldReturnListOfMedicalRecords() throws Exception {
+    void getAllMedicalRecordsTest() throws Exception {
 
         List<MedicalRecord> medicalRecords = List.of(
                 new MedicalRecord("John", "Doe", "01/01/1990", List.of("med1", "med2"), List.of("allergy1")),
@@ -54,7 +53,7 @@ class MedicalRecordControllerTest {
     }
 
     @Test
-    void addOneMedicalRecord() throws Exception {
+    void addOneMedicalRecordTest() throws Exception {
 
         MedicalRecord medicalRecord = new MedicalRecord("John", "Doe", "01/01/1990", List.of("med1", "med2"), List.of("allergy1"));
         doNothing().when(medicalRecordRepository).save(medicalRecord);
@@ -69,7 +68,7 @@ class MedicalRecordControllerTest {
     }
 
     @Test
-    void deleteOneMedicalRecord() throws Exception {
+    void deleteOneMedicalRecordTest() throws Exception {
 
         MedicalRecord medicalRecord = new MedicalRecord("John", "Doe", "01/01/1990", List.of("med1", "med2"), List.of("allergy1"));
         doNothing().when(medicalRecordRepository).delete(medicalRecord);
@@ -84,7 +83,7 @@ class MedicalRecordControllerTest {
     }
 
     @Test
-    void updateOneMedicalRecord() throws Exception {
+    void updateOneMedicalRecordTest() throws Exception {
 
         MedicalRecord medicalRecord = new MedicalRecord("John", "Doe", "01/01/1990", List.of("med1", "med2"), List.of("allergy1"));
         doNothing().when(medicalRecordRepository).update(medicalRecord);

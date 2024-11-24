@@ -8,7 +8,6 @@ public class Data {
     private List<FireStation> firestations =new ArrayList<>();
     private List<MedicalRecord> medicalrecords=new ArrayList<>();
 
-    // No-argument constructor
     public Data() {
     }
 
@@ -18,7 +17,6 @@ public class Data {
         this.medicalrecords = medicalRecords;
     }
 
-    // Getters and Setters
     public List<Person> getPersons() {
         return persons;
     }

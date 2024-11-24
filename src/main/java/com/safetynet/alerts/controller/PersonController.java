@@ -20,7 +20,7 @@ public class PersonController {
 
     @GetMapping
     public List<Person> getAllPersons() {
-        log.info("Received request to fetch all persons.");
+        log.info("Received request to get all persons.");
         List<Person> persons = personRepository.findAll();
         log.info("Fetched {} persons.", persons.size());
         return persons;

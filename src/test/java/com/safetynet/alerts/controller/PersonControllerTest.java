@@ -35,7 +35,7 @@ class PersonControllerTest {
     }
 
     @Test
-    void getAllPersons() throws Exception {
+    void getAllPersonsTest() throws Exception {
 
         List<Person> persons = List.of(new Person("John", "Doe", "1509 Culver St", "Culver", 90230, "john.doe@email.com", "841-874-6512"));
         when(personRepository.findAll()).thenReturn(persons);
@@ -51,7 +51,7 @@ class PersonControllerTest {
     }
 
     @Test
-    void addOnePerson() throws Exception {
+    void addOnePersonTest() throws Exception {
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
         doNothing().when(personRepository).save(person);
 
@@ -65,7 +65,7 @@ class PersonControllerTest {
     }
 
     @Test
-    void deleteOnePerson() throws Exception {
+    void deleteOnePersonTest() throws Exception {
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
         doNothing().when(personRepository).delete(person);
 
@@ -79,7 +79,7 @@ class PersonControllerTest {
     }
 
     @Test
-    void updateOnePerson() throws Exception {
+    void updateOnePersonTest() throws Exception {
 
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
         doNothing().when(personRepository).update(person);

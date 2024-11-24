@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -57,4 +58,18 @@ public class PersonRepositoryImpl implements PersonRepository {
         return persons.stream().filter(person -> person.getAddress().equals(address))
                 .toList();
     }
+    @Override
+    public List<Person> findPersonsByCity(String city) {
+        return persons.stream()
+                      .filter(person -> person.getCity().equalsIgnoreCase(city))
+                      .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Person> findPersonsByLastName(String lastName) {
+        return persons.stream()
+                      .filter(person -> person.getLastName().equalsIgnoreCase(lastName))
+                      .collect(Collectors.toList());
+    }
+
 }

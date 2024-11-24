@@ -24,10 +24,8 @@ class FireStationRepositoryImplTest {
 
     @BeforeEach
     void setUp() {
-        // Initialise Mockito
         MockitoAnnotations.openMocks(this);
 
-        // Mock des données initiales
         Data mockData = new Data();
         List<FireStation> mockFireStations = Arrays.asList(
                 new FireStation("1509 Culver St", "3"),

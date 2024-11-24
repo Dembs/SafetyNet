@@ -35,7 +35,7 @@ class ChildAlertServiceTest {
     }
 
     @Test
-    void getChildrenAtAddress() {
+    void getChildrenAtAddressTest() {
         String address = "1509 Culver St";
         List<Person> personsAtAddress = Arrays.asList(
                 new Person("John", "Boyd", "1509 Culver St", "Culver", 97451, "841-874-6512", "john.boyd@example.com"),

@@ -2,7 +2,6 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.service.PhoneAlertService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,15 +25,12 @@ class PhoneAlertControllerTest {
 
 
     @Test
-    void getPhoneNumbers() throws Exception {
-        // Mock data
+    void getPhoneNumbersTest() throws Exception {
         String fireStationNumber = "1";
         List<String> phoneNumbers = List.of("123-456-7890", "987-654-3210");
 
-        // Mock service call
         when(phoneAlertService.getPhoneNumbersByFireStation(fireStationNumber)).thenReturn(phoneNumbers);
 
-        // Perform request and verify response
         mockMvc.perform(get("/phoneAlert")
                        .param("firestation", fireStationNumber))
                .andExpect(status().isOk())

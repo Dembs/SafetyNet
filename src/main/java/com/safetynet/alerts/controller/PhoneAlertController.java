@@ -20,7 +20,7 @@ public class PhoneAlertController {
 
     @GetMapping(params = "firestation")
     public List<String> getPhoneNumbers(@RequestParam String firestation) {
-        log.info("Received request to fetch phone numbers for fire station number: {}", firestation);
+        log.info("Received request to get phone numbers for fire station number: {}", firestation);
 
         List<String> phoneNumbers;
         try {

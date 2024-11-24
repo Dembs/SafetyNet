@@ -1,6 +1,6 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.PersonInfoDTO;
+import com.safetynet.alerts.dto.FireStationInfoDTO;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
@@ -42,7 +42,7 @@ public class FireStationService {
                                         })
                                         .toList();
 
-        List<PersonInfoDTO> personsInfo = new ArrayList<>();
+        List<FireStationInfoDTO> personsInfo = new ArrayList<>();
         int adultCount = 0;
         int childCount = 0;
 
@@ -53,7 +53,7 @@ public class FireStationService {
 
             log.debug("Person: {} {}, Age: {}", person.getFirstName(), person.getLastName(), age);
 
-            personsInfo.add(new PersonInfoDTO(person.getFirstName(), person.getLastName(), person.getAddress(), person.getPhone()));
+            personsInfo.add(new FireStationInfoDTO(person.getFirstName(), person.getLastName(), person.getAddress(), person.getPhone()));
 
             if (age <= 18) {
                 childCount++;

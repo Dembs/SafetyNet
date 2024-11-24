@@ -20,7 +20,7 @@ public class FireInfoController {
 
     @GetMapping(params = "address")
     public Map<String, Object> getResidentsByAddress(@RequestParam String address) {
-        log.info("Received request for residents at address: {}", address);
+        log.info("Received request to get residents at address: {}", address);
         try {
             Map<String, Object>response = fireInfoService.getResidentsByAddress(address);
             log.info("Successfully fetched residents and fire station information for address: {}", address);

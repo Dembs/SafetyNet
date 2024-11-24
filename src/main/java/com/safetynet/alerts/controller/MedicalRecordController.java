@@ -20,7 +20,7 @@ public class MedicalRecordController {
 
     @GetMapping
     public List<MedicalRecord> getAllMedicalRecords() {
-        log.info("Received request to fetch all medical records.");
+        log.info("Received request to get all medical records.");
         List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
         log.info("Fetched {} medical records.", medicalRecords.size());
         return medicalRecords;
