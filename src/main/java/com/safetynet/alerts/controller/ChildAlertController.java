@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller class for retrieving information about children at a specific address.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/childAlert")

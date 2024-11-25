@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/**
+ * Controller for retrieving information about residents and fire stations.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/fire")
@@ -18,17 +21,20 @@ public class FireInfoController {
     @Autowired
     private FireInfoService fireInfoService;
 
+    /**
+     * Fetches residents and fire station information for a given address.
+     *
+     */
     @GetMapping(params = "address")
     public Map<String, Object> getResidentsByAddress(@RequestParam String address) {
         log.info("Received request to get residents at address: {}", address);
         try {
-            Map<String, Object>response = fireInfoService.getResidentsByAddress(address);
+            Map<String, Object> response = fireInfoService.getResidentsByAddress(address);
             log.info("Successfully fetched residents and fire station information for address: {}", address);
             return response;
+        } catch (IllegalArgumentException e) {
+            log.error("Error: Invalid address provided: {}", address, e);
+            throw e;
         }
-     catch (IllegalArgumentException e) {
-        log.error("Error: Invalid address provided: {}", address, e);
-        throw e;
-    }
     }
 }

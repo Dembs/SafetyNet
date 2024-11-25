@@ -48,5 +48,15 @@ public class ChildAlertControllerIT {
                .andExpect(jsonPath("$[0].familyMembers[0].firstName", is("John")))
                .andExpect(jsonPath("$[0].familyMembers[0].lastName", is("Boyd")));
     }
+    @Test
+    void getChildrenAtAddress_EmptyResponseIT() throws Exception {
+        String testAddress = "123 test";
+
+        mockMvc.perform(get("/childAlert")
+                       .param("address", testAddress)
+                       .accept(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$", hasSize(0)));
+    }
 
 }

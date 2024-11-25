@@ -10,13 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service to retrieve information about children and their family members at a given address.
+ */
 @Slf4j
 @Service
 public class ChildAlertService {
@@ -26,12 +26,14 @@ public class ChildAlertService {
 
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
+    @Autowired
+    private DateService dateService;
 
     public List<ChildInfoDTO> getChildrenAtAddress(String address) {
-        log.info("Fetching children at address: {}",address);
+        log.info("Fetching children at address: {}", address);
 
         List<Person> personsAtAddress = personRepository.findPersonsByAddress(address);
-        log.debug("Found {} persons at address: {}", personsAtAddress.size(),address);
+        log.debug("Found {} persons at address: {}", personsAtAddress.size(), address);
 
         List<ChildInfoDTO> children = new ArrayList<>();
 
@@ -42,7 +44,7 @@ public class ChildAlertService {
 
             if (medicalRecordPers.isPresent()) {
                 MedicalRecord medicalRecord = medicalRecordPers.get();
-                int age = calculateAge(medicalRecord.getBirthdate());
+                int age = dateService.calculateAge(medicalRecord.getBirthdate());
                 log.debug("Calculated age for {} {}: {}", person.getFirstName(), person.getLastName(), age);
 
                 if (age <= 18) {
@@ -64,11 +66,4 @@ public class ChildAlertService {
         return children;
     }
 
-    private int calculateAge(String birthdate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        LocalDate birthDate = LocalDate.parse(birthdate, formatter);
-        int age = Period.between(birthDate, LocalDate.now()).getYears();
-        log.debug("Calculated age {} for birthdate: {}", age, birthdate);
-        return age;
-    }
 }

@@ -3,21 +3,26 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing persons.
+ * Provides endpoints to retrieve, add, update, and delete person records.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/person")
 public class PersonController {
 
-    private final PersonRepository personRepository;
+    @Autowired
+    private PersonRepository personRepository;
 
-    public PersonController(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
-
+    /**
+     * Retrieves a list of all persons in the repository.
+     */
     @GetMapping
     public List<Person> getAllPersons() {
         log.info("Received request to get all persons.");
@@ -26,6 +31,9 @@ public class PersonController {
         return persons;
     }
 
+    /**
+     * Adds a new person to the repository.
+     */
     @PostMapping
     public String addOnePerson(@RequestBody Person person) {
         log.info("Received request to add a new person: {}", person);
@@ -34,6 +42,9 @@ public class PersonController {
         return "Person added successfully!";
     }
 
+    /**
+     * Deletes an existing person from the repository.
+     */
     @DeleteMapping
     public String deleteOnePerson(@RequestBody Person person) {
         log.info("Received request to delete person: {}", person);
@@ -42,6 +53,9 @@ public class PersonController {
         return "Person deleted successfully";
     }
 
+    /**
+     * Updates an existing person's details in the repository.
+     */
     @PutMapping
     public String updateOnePerson(@RequestBody Person person) {
         log.info("Received request to update person: {}", person);

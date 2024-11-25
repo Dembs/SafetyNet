@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ *Controller for handling requests related to person information.
+ * Provides endpoints to retrieve detailed information about persons based on their last name.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/personInfo")
@@ -19,6 +23,12 @@ public class PersonInfoController {
     @Autowired
     private PersonInfoService personInfoService;
 
+    /**
+     * Retrieves a list of detailed information about persons with the specified last name.
+     *
+     * @param lastName the last name to filter persons by.
+     * @return a list of person containing detailed information about the persons with the given last name.
+     */
     @GetMapping(params = "lastName")
     public List<PersonInfoDTO> getPersonsByLastName(@RequestParam String lastName) {
         log.info("Received request to get persons with last name: {}", lastName);

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service responsible for fetching phone numbers of residents covered by a specific fire station.
+ */
 @Slf4j
 @Service
 public class PhoneAlertService {
@@ -18,6 +21,9 @@ public class PhoneAlertService {
     @Autowired
     private PersonRepository personRepository;
 
+    /**
+     * Retrieves a list of phone numbers of all residents covered by the specified fire station.
+     */
     public List<String> getPhoneNumbersByFireStation(String fireStationNumber) {
         log.info("Fetching phone numbers for fire station number: {}", fireStationNumber);
 

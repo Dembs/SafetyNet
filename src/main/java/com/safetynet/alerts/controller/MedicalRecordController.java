@@ -3,21 +3,26 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing medical records.
+ * Provides endpoints to retrieve, add, update, and delete medical records.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/medicalRecord")
 public class MedicalRecordController {
+    @Autowired
+    private MedicalRecordRepository medicalRecordRepository;
 
-    private final MedicalRecordRepository medicalRecordRepository;
-
-    public MedicalRecordController(MedicalRecordRepository medicalRecordRepository) {
-        this.medicalRecordRepository = medicalRecordRepository;
-    }
-
+    /**
+     * Retrieves a list of all medical records in the repository.
+     *
+     */
     @GetMapping
     public List<MedicalRecord> getAllMedicalRecords() {
         log.info("Received request to get all medical records.");
@@ -26,6 +31,10 @@ public class MedicalRecordController {
         return medicalRecords;
     }
 
+    /**
+     * Adds a new medical record to the repository.
+     *
+     */
     @PostMapping
     public String addOneMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         log.info("Received request to add a new medical record: {}", medicalRecord);
@@ -34,6 +43,10 @@ public class MedicalRecordController {
         return "Medical Record added successfully";
     }
 
+    /**
+     * Deletes an existing medical record from the repository.
+     *
+     */
     @DeleteMapping
     public String deleteOneMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         log.info("Received request to delete medical record: {}", medicalRecord);
@@ -42,6 +55,10 @@ public class MedicalRecordController {
         return "MedicalRecord deleted successfully";
     }
 
+    /**
+     * Updates an existing medical record in the repository.
+     *
+     */
     @PutMapping
     public String updateOneMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         log.info("Received request to update medical record: {}", medicalRecord);

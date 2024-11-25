@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service responsible for retrieving the list of unique email addresses of residents
+ */
 @Slf4j
 @Service
 public class CommunityEmailService {
@@ -19,7 +22,6 @@ public class CommunityEmailService {
         log.info("Fetching emails for city: {}", city);
 
         List<Person> personsInCity = personRepository.findPersonsByCity(city);
-
         log.debug("Found {} persons in city: {}", personsInCity.size(), city);
 
         List<String> emails = personsInCity.stream()

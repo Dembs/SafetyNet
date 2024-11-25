@@ -10,13 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Service responsible for retrieving information about residents living at a specific address.
+ * It also fetches the associated fire station number for the given address.
+ */
 @Slf4j
 @Service
 public class FireInfoService {
@@ -30,10 +31,19 @@ public class FireInfoService {
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
 
+    @Autowired
+    private DateService dateService;
+
+    /**
+     * Retrieves the list of residents living at the specified address along with the fire station number.
+     * The response includes personal details such as name, phone, age, medications, and allergies.
+     *
+     */
     public Map<String, Object> getResidentsByAddress(String address) {
         log.info("Fetching residents and fire station information for address: {}", address);
 
         try {
+
             log.debug("Looking up fire station number for address: {}", address);
             String fireStationNumber = fireStationRepository.findAll().stream()
                                                             .filter(fireStation -> fireStation.getAddress().equals(address))
@@ -49,10 +59,11 @@ public class FireInfoService {
             log.debug("Retrieving residents for address: {}", address);
             List<Person> residents = personRepository.findPersonsByAddress(address);
 
+
             log.debug("Constructing ResidentInfoDTO list");
             List<ResidentInfoDTO> residentInfoList = residents.stream().map(person -> {
                 Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findMedicalRecord(person.getFirstName(), person.getLastName());
-                int age = medicalRecord.map(record -> calculateAge(record.getBirthdate())).orElse(0);
+                int age = medicalRecord.map(record -> dateService.calculateAge(record.getBirthdate())).orElse(0);
                 List<String> medications = medicalRecord.map(MedicalRecord::getMedications).orElse(List.of());
                 List<String> allergies = medicalRecord.map(MedicalRecord::getAllergies).orElse(List.of());
 
@@ -71,11 +82,4 @@ public class FireInfoService {
         }
     }
 
-    private int calculateAge(String birthdate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        LocalDate birthDate = LocalDate.parse(birthdate, formatter);
-        int age = Period.between(birthDate, LocalDate.now()).getYears();
-        log.debug("Calculated age {} for birthdate: {}", age, birthdate);
-        return age;
-    }
 }

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller for retrieving email addresses of residents in a specific city.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/communityEmail")

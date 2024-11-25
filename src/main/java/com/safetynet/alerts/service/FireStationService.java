@@ -9,21 +9,31 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * Service responsible for retrieving information about persons covered by specific fire stations.
+ * It also includes counts of adults and children.
+ */
 @Slf4j
 @Service
 public class FireStationService {
-    @Autowired
-    FireStationRepository fireStationRepository;
-    @Autowired
-    PersonRepository personRepository;
-    @Autowired
-    MedicalRecordRepository medicalRecordRepository;
 
+    @Autowired
+    private FireStationRepository fireStationRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
+
+    @Autowired
+    private MedicalRecordRepository medicalRecordRepository;
+
+    @Autowired
+    private DateService dateService;
+
+    /**
+     * Retrieves a list of persons covered by the specified fire station number.
+     */
     public Map<String, Object> getPersonsByStation(String stationNumber) {
         log.info("Fetching persons for station number: {}", stationNumber);
 
@@ -46,15 +56,17 @@ public class FireStationService {
         int adultCount = 0;
         int childCount = 0;
 
+        // Process each person to classify as adult/child
         for (Person person : persons) {
             int age = medicalRecordRepository.findMedicalRecord(person.getFirstName(), person.getLastName())
-                                             .map(record -> calculateAge(record.getBirthdate()))
+                                             .map(record -> dateService.calculateAge(record.getBirthdate()))
                                              .orElse(0);
 
             log.debug("Person: {} {}, Age: {}", person.getFirstName(), person.getLastName(), age);
 
             personsInfo.add(new FireStationInfoDTO(person.getFirstName(), person.getLastName(), person.getAddress(), person.getPhone()));
 
+            // Update adult and child counts based on age
             if (age <= 18) {
                 childCount++;
             } else {
@@ -64,6 +76,7 @@ public class FireStationService {
 
         log.info("Processed {} adults and {} children for station number {}", adultCount, childCount, stationNumber);
 
+        // Construct the response map
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("adults", adultCount);
         result.put("children", childCount);
@@ -72,11 +85,4 @@ public class FireStationService {
         return result;
     }
 
-    private int calculateAge(String birthdate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        LocalDate birthDate = LocalDate.parse(birthdate, formatter);
-        int age = Period.between(birthDate, LocalDate.now()).getYears();
-        log.debug("Calculated age {} for birthdate: {}", age, birthdate);
-        return age;
-    }
 }

@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Service responsible for loading application data from a JSON file at startup.
+ * This data includes information about persons, fire stations, and medical records.
+ */
 @Slf4j
 @Service
 public class DataLoader {
@@ -28,6 +32,11 @@ public class DataLoader {
         }
     }
 
+    /**
+     * Retrieves the loaded data.
+     *
+     * @return Data object containing persons, fire stations, and medical records.
+     */
     public Data getData() {
         return data;
     }
