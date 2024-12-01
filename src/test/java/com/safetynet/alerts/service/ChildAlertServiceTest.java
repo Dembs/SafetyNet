@@ -26,6 +26,9 @@ class ChildAlertServiceTest {
     @Mock
     private MedicalRecordRepository medicalRecordRepository;
 
+    @Mock
+    private DateService dateService;
+
     @InjectMocks
     private ChildAlertService childAlertService;
 
@@ -49,6 +52,8 @@ class ChildAlertServiceTest {
         when(personRepository.findPersonsByAddress(address)).thenReturn(personsAtAddress);
         when(medicalRecordRepository.findMedicalRecord("John", "Boyd")).thenReturn(Optional.of(johnMedicalRecord));
         when(medicalRecordRepository.findMedicalRecord("Jacob", "Boyd")).thenReturn(Optional.of(jacobMedicalRecord));
+        when(dateService.calculateAge("03/06/1984")).thenReturn(39);
+        when(dateService.calculateAge("03/06/2010")).thenReturn(14);
 
         List<ChildInfoDTO> children = childAlertService.getChildrenAtAddress(address);
 

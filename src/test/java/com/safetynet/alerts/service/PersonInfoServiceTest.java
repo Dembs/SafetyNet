@@ -25,6 +25,9 @@ class PersonInfoServiceTest {
     @Mock
     private MedicalRecordRepository medicalRecordRepository;
 
+    @Mock
+    private DateService dateService;
+
     @InjectMocks
     private PersonInfoService personInfoService;
 
@@ -47,7 +50,8 @@ class PersonInfoServiceTest {
         when(personRepository.findPersonsByLastName(lastName)).thenReturn(List.of(person1, person2));
         when(medicalRecordRepository.findMedicalRecord("John", "Doe")).thenReturn(Optional.of(medicalRecord1));
         when(medicalRecordRepository.findMedicalRecord("Jane", "Doe")).thenReturn(Optional.of(medicalRecord2));
-
+        when(dateService.calculateAge("03/06/1984")).thenReturn(40);
+        when(dateService.calculateAge("05/10/2010")).thenReturn(14);
 
         List<PersonInfoDTO> result = personInfoService.getPersonsByLastName(lastName);
 

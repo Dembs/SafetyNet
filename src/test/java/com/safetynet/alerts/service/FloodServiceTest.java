@@ -29,6 +29,9 @@ class FloodServiceTest {
     @Mock
     private MedicalRecordRepository medicalRecordRepository;
 
+    @Mock
+    private DateService dateService;
+
     @InjectMocks
     private FloodService floodService;
 
@@ -58,6 +61,8 @@ class FloodServiceTest {
 
         when(medicalRecordRepository.findMedicalRecord("John", "Doe")).thenReturn(Optional.of(medicalRecord1));
         when(medicalRecordRepository.findMedicalRecord("Jane", "Smith")).thenReturn(Optional.of(medicalRecord2));
+        when(dateService.calculateAge("03/06/1984")).thenReturn(40);
+        when(dateService.calculateAge("05/10/2010")).thenReturn(14);
 
         Map<String, List<ResidentInfoDTO>> result = floodService.getHouseholdsByStations(stationNumbers);
 

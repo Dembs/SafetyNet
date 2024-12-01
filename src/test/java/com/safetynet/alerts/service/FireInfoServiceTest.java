@@ -31,6 +31,9 @@ class FireInfoServiceTest {
     @Mock
     private MedicalRecordRepository medicalRecordRepository;
 
+    @Mock
+    private DateService dateService;
+
     @InjectMocks
     private FireInfoService fireInfoService;
 
@@ -56,7 +59,8 @@ class FireInfoServiceTest {
         when(personRepository.findPersonsByAddress(address)).thenReturn(List.of(person1, person2));
         when(medicalRecordRepository.findMedicalRecord("John", "Doe")).thenReturn(Optional.of(medicalRecord1));
         when(medicalRecordRepository.findMedicalRecord("Jacob", "Boyd")).thenReturn(Optional.of(medicalRecord2));
-
+        when(dateService.calculateAge("03/06/1984")).thenReturn(40);
+        when(dateService.calculateAge("05/10/2010")).thenReturn(14);
         Map<String, Object> result = fireInfoService.getResidentsByAddress(address);
 
         assertEquals(fireStationNumber, result.get("fireStationNumber"));
