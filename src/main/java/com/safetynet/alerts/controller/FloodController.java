@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Controller for handling flood-related requests.
- * Provides an endpoint to fetch household information for a list of fire station numbers.
- */
 @Slf4j
 @RestController
 @RequestMapping("/flood")
@@ -24,17 +20,22 @@ public class FloodController {
     @Autowired
     private FloodService floodService;
 
-    /**
-     * Fetches households covered by the specified fire stations.
-     * The result includes a map where the key is the address of the household
-     */
     @GetMapping("/stations")
     public Map<String, List<ResidentInfoDTO>> getHouseholdsByStations(@RequestParam List<String> stations) {
         log.info("Received request to get households for fire stations: {}", stations);
 
-        Map<String, List<ResidentInfoDTO>> response = floodService.getHouseholdsByStations(stations);
-
-        log.info("Successfully fetched {} households for fire stations: {}", response.size(), stations);
-        return response;
+        try {
+            log.debug("Calling FloodService to fetch households for stations: {}", stations);
+            Map<String, List<ResidentInfoDTO>> response = floodService.getHouseholdsByStations(stations);
+            log.debug("Fetched households: {}", response);
+            log.info("Successfully fetched {} households for fire stations: {}", response.size(), stations);
+            return response;
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid fire station list provided: {}", stations, e);
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error occurred while fetching households for fire stations: {}", stations, e);
+            throw e;
+        }
     }
 }

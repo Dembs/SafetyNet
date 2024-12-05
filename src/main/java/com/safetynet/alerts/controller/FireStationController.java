@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Controller for managing fire station operations.
- * Provides endpoints to retrieve, add, update, and delete fire stations.
- */
 @Slf4j
 @RestController
 @RequestMapping("/firestation")
@@ -25,66 +21,73 @@ public class FireStationController {
     @Autowired
     private FireStationService fireStationService;
 
-    /**
-     * Fetches a list of all fire stations.
-     *
-     */
     @GetMapping
     public List<FireStation> getAllFireStations() {
-        log.info("Fetching all fire stations");
-        return fireStationRepository.findAll();
+        log.info("Received request to fetch all fire stations.");
+        try {
+            List<FireStation> fireStations = fireStationRepository.findAll();
+            log.debug("Fetched fire stations: {}", fireStations);
+            log.info("Successfully fetched {} fire stations.", fireStations.size());
+            return fireStations;
+        } catch (Exception e) {
+            log.error("Error occurred while fetching fire stations.", e);
+            throw e;
+        }
     }
 
-    /**
-     * Adds a new fire station.
-     *
-     */
     @PostMapping
     public String addOneFireStation(@RequestBody FireStation fireStation) {
-        log.info("Adding new fire station: {}", fireStation);
-        fireStationRepository.save(fireStation);
-        log.info("Fire station added successfully: {}", fireStation);
-        return "Fire Station added successfully!";
+        log.info("Received request to add a new fire station: {}", fireStation);
+        try {
+            fireStationRepository.save(fireStation);
+            log.debug("Fire station saved: {}", fireStation);
+            log.info("Fire station added successfully: {}", fireStation);
+            return "Fire Station added successfully!";
+        } catch (Exception e) {
+            log.error("Error occurred while adding fire station: {}", fireStation, e);
+            return "Failed to add fire station.";
+        }
     }
 
-    /**
-     * Deletes an existing fire station.
-     *
-     */
     @DeleteMapping
-    public String deleteOneFireSation(@RequestBody FireStation fireStation) {
-        log.info("Deleting fire station: {}", fireStation);
-        fireStationRepository.delete(fireStation);
-        log.info("Fire station deleted successfully: {}", fireStation);
-        return "Fire Station deleted successfully";
+    public String deleteOneFireStation(@RequestBody FireStation fireStation) {
+        log.info("Received request to delete fire station: {}", fireStation);
+        try {
+            fireStationRepository.delete(fireStation);
+            log.debug("Fire station deleted: {}", fireStation);
+            log.info("Fire station deleted successfully: {}", fireStation);
+            return "Fire Station deleted successfully";
+        } catch (Exception e) {
+            log.error("Error occurred while deleting fire station: {}", fireStation, e);
+            return "Failed to delete fire station.";
+        }
     }
 
-    /**
-     * Updates an existing fire station.
-     *
-     */
     @PutMapping
-    public String updateOnePerson(@RequestBody FireStation fireStation) {
-        log.info("Updating fire station: {}", fireStation);
-        fireStationRepository.update(fireStation);
-        log.info("Fire station updated successfully: {}", fireStation);
-        return "Fire Station updated successfully";
+    public String updateOneFireStation(@RequestBody FireStation fireStation) {
+        log.info("Received request to update fire station: {}", fireStation);
+        try {
+            fireStationRepository.update(fireStation);
+            log.debug("Fire station updated: {}", fireStation);
+            log.info("Fire station updated successfully: {}", fireStation);
+            return "Fire Station updated successfully";
+        } catch (Exception e) {
+            log.error("Error occurred while updating fire station: {}", fireStation, e);
+            return "Failed to update fire station.";
+        }
     }
 
-    /**
-     * Fetches a list of persons covered by a specific fire station number.
-     * Includes additional information such as the number of adults and children covered by the station.
-     *
-     */
     @GetMapping(params = "stationNumber")
     public Map<String, Object> getPersonsByStation(@RequestParam String stationNumber) {
-        log.info("Fetching persons covered by station number: {}", stationNumber);
+        log.info("Received request to fetch persons covered by station number: {}", stationNumber);
         try {
+            log.debug("Calling FireStationService to fetch persons for station number: {}", stationNumber);
             Map<String, Object> response = fireStationService.getPersonsByStation(stationNumber);
+            log.debug("Fetched response: {}", response);
             log.info("Successfully fetched persons for station number: {}", stationNumber);
             return response;
         } catch (IllegalArgumentException e) {
-            log.error("Error fetching persons for station number: {}", stationNumber, e);
+            log.error("Invalid station number provided: {}", stationNumber, e);
             throw e;
         }
     }

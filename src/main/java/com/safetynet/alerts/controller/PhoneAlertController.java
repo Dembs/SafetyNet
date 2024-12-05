@@ -32,15 +32,15 @@ public class PhoneAlertController {
     public List<String> getPhoneNumbers(@RequestParam String firestation) {
         log.info("Received request to get phone numbers for fire station number: {}", firestation);
 
-        List<String> phoneNumbers;
         try {
-            phoneNumbers = phoneAlertService.getPhoneNumbersByFireStation(firestation);
+            log.debug("Calling PhoneAlertService to fetch phone numbers for fire station: {}", firestation);
+            List<String> phoneNumbers = phoneAlertService.getPhoneNumbersByFireStation(firestation);
+            log.debug("Phone numbers fetched: {}", phoneNumbers);
             log.info("Successfully retrieved {} phone numbers for fire station number: {}", phoneNumbers.size(), firestation);
+            return phoneNumbers;
         } catch (IllegalArgumentException e) {
-            log.error("Error fetching phone numbers for fire station number: {}", firestation, e);
+            log.error("Invalid fire station number provided: {}", firestation, e);
             throw e;
         }
-
-        return phoneNumbers;
     }
 }

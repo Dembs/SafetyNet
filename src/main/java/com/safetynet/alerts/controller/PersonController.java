@@ -26,9 +26,15 @@ public class PersonController {
     @GetMapping
     public List<Person> getAllPersons() {
         log.info("Received request to get all persons.");
-        List<Person> persons = personRepository.findAll();
-        log.info("Fetched {} persons.", persons.size());
-        return persons;
+        try {
+            List<Person> persons = personRepository.findAll();
+            log.debug("Fetched persons: {}", persons);
+            log.info("Fetched {} persons.", persons.size());
+            return persons;
+        } catch (Exception e) {
+            log.error("Error occurred while fetching all persons.", e);
+            throw e;
+        }
     }
 
     /**
@@ -37,9 +43,15 @@ public class PersonController {
     @PostMapping
     public String addOnePerson(@RequestBody Person person) {
         log.info("Received request to add a new person: {}", person);
-        personRepository.save(person);
-        log.info("Person added successfully: {} {}", person.getFirstName(), person.getLastName());
-        return "Person added successfully!";
+        try {
+            personRepository.save(person);
+            log.debug("Person saved: {}", person);
+            log.info("Person added successfully: {} {}", person.getFirstName(), person.getLastName());
+            return "Person added successfully!";
+        } catch (Exception e) {
+            log.error("Error occurred while adding a new person: {}", person, e);
+            return "Failed to add the person.";
+        }
     }
 
     /**
@@ -48,9 +60,15 @@ public class PersonController {
     @DeleteMapping
     public String deleteOnePerson(@RequestBody Person person) {
         log.info("Received request to delete person: {}", person);
-        personRepository.delete(person);
-        log.info("Person deleted successfully: {} {}", person.getFirstName(), person.getLastName());
-        return "Person deleted successfully";
+        try {
+            personRepository.delete(person);
+            log.debug("Person deleted: {}", person);
+            log.info("Person deleted successfully: {} {}", person.getFirstName(), person.getLastName());
+            return "Person deleted successfully";
+        } catch (Exception e) {
+            log.error("Error occurred while deleting person: {}", person, e);
+            return "Failed to delete the person.";
+        }
     }
 
     /**
@@ -59,8 +77,14 @@ public class PersonController {
     @PutMapping
     public String updateOnePerson(@RequestBody Person person) {
         log.info("Received request to update person: {}", person);
-        personRepository.update(person);
-        log.info("Person updated successfully: {} {}", person.getFirstName(), person.getLastName());
-        return "Person updated successfully";
+        try {
+            personRepository.update(person);
+            log.debug("Person updated: {}", person);
+            log.info("Person updated successfully: {} {}", person.getFirstName(), person.getLastName());
+            return "Person updated successfully";
+        } catch (Exception e) {
+            log.error("Error occurred while updating person: {}", person, e);
+            return "Failed to update the person.";
+        }
     }
 }
