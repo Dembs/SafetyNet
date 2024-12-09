@@ -49,4 +49,14 @@ class FloodControllerTest {
                .andExpect(jsonPath("$.['29 15th St'][0].firstName").value("Jacob"));
     }
 
+    @Test
+    void getHouseholdsByStations_EmptyResponseTest() throws Exception {
+        List<String> stations = List.of("3");
+
+        when(floodService.getHouseholdsByStations(stations)).thenReturn(Map.of());
+
+        mockMvc.perform(get("/flood/stations").param("stations", "3"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$").isEmpty());
+    }
 }

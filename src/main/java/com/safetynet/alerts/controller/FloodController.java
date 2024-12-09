@@ -33,9 +33,6 @@ public class FloodController {
         } catch (IllegalArgumentException e) {
             log.error("Invalid fire station list provided: {}", stations, e);
             throw e;
-        } catch (Exception e) {
-            log.error("Unexpected error occurred while fetching households for fire stations: {}", stations, e);
-            throw e;
         }
     }
 }

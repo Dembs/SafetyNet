@@ -37,5 +37,15 @@ class CommunityEmailControllerTest {
                .andExpect(jsonPath("$[1]").value("jane.doe@example.com"));
     }
 
+    @Test
+    void getEmailsByCity_EmptyResponseTest() throws Exception {
+        String city = "123 test";
+
+        when(communityEmailService.getEmailsByCity(city)).thenReturn(List.of());
+
+        mockMvc.perform(get("/communityEmail").param("city", city))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.length()").value(0));
+    }
 
 }

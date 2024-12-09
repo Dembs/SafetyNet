@@ -5,6 +5,7 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -68,6 +69,19 @@ class MedicalRecordControllerTest {
     }
 
     @Test
+    void addOneMedicalRecordTest_Exception() throws Exception {
+        MedicalRecord medicalRecord = new MedicalRecord("Jane", "Smith", "02/02/1990", List.of("med2"), List.of("allergy2"));
+        doThrow(new RuntimeException("Save operation failed")).when(medicalRecordRepository).save(Mockito.any(MedicalRecord.class));
+
+        mockMvc.perform(post("/medicalRecord")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(medicalRecord)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to add medical record."));
+
+        verify(medicalRecordRepository, times(1)).save(Mockito.any(MedicalRecord.class));
+    }
+    @Test
     void deleteOneMedicalRecordTest() throws Exception {
 
         MedicalRecord medicalRecord = new MedicalRecord("John", "Doe", "01/01/1990", List.of("med1", "med2"), List.of("allergy1"));
@@ -83,6 +97,19 @@ class MedicalRecordControllerTest {
     }
 
     @Test
+    void deleteOneMedicalRecordTest_Exception() throws Exception {
+        MedicalRecord medicalRecord = new MedicalRecord("Jane", "Smith", "02/02/1990", List.of("med2"), List.of("allergy2"));
+        doThrow(new RuntimeException("Delete operation failed")).when(medicalRecordRepository).delete(Mockito.any(MedicalRecord.class));
+
+        mockMvc.perform(delete("/medicalRecord")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(medicalRecord)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to delete medical record."));
+
+        verify(medicalRecordRepository, times(1)).delete(Mockito.any(MedicalRecord.class));
+    }
+    @Test
     void updateOneMedicalRecordTest() throws Exception {
 
         MedicalRecord medicalRecord = new MedicalRecord("John", "Doe", "01/01/1990", List.of("med1", "med2"), List.of("allergy1"));
@@ -95,5 +122,19 @@ class MedicalRecordControllerTest {
                .andExpect(content().string("MedicalRecord updated successfully"));
 
         verify(medicalRecordRepository, times(1)).update(any(MedicalRecord.class));
+    }
+
+    @Test
+    void updateOneMedicalRecordTest_Exception() throws Exception {
+        MedicalRecord medicalRecord = new MedicalRecord("Jane", "Smith", "02/02/1990", List.of("med2"), List.of("allergy2"));
+        doThrow(new RuntimeException("Update operation failed")).when(medicalRecordRepository).update(Mockito.any(MedicalRecord.class));
+
+        mockMvc.perform(put("/medicalRecord")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(medicalRecord)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to update medical record."));
+
+        verify(medicalRecordRepository, times(1)).update(Mockito.any(MedicalRecord.class));
     }
 }

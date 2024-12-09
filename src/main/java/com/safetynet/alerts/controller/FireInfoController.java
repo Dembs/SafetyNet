@@ -30,9 +30,6 @@ public class FireInfoController {
         } catch (IllegalArgumentException e) {
             log.error("Invalid address provided: {}", address, e);
             throw e;
-        } catch (Exception e) {
-            log.error("Unexpected error occurred while fetching data for address: {}", address, e);
-            throw e;
         }
     }
 }

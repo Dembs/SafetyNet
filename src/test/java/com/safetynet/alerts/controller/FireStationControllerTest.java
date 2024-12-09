@@ -40,7 +40,7 @@ class FireStationControllerTest {
     }
 
     @Test
-    void getAllFireStations() throws Exception {
+    void getAllFireStationsTest() throws Exception {
         List<FireStation> fireStations = List.of(new FireStation("1509 Culver St", "3"));
         when(fireStationRepository.findAll()).thenReturn(fireStations);
 
@@ -55,12 +55,11 @@ class FireStationControllerTest {
     }
 
     @Test
-    void addOneFireStation() throws Exception {
+    void addOneFireStationTest() throws Exception {
 
         FireStation fireStation = new FireStation("1509 Culver St", "3");
         doNothing().when(fireStationRepository).save(fireStation);
 
-        // Act & Assert
         mockMvc.perform(post("/firestation")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(fireStation)))
@@ -71,7 +70,20 @@ class FireStationControllerTest {
     }
 
     @Test
-    void deleteOneFireStation() throws Exception {
+    void addOneFireStationTest_Exception() throws Exception {
+        FireStation fireStation = new FireStation("1509 Culver St", "1");
+        doThrow(new RuntimeException("Save operation failed")).when(fireStationRepository).save(Mockito.any(FireStation.class));
+
+        mockMvc.perform(post("/firestation")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(fireStation)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to add fire station."));
+
+        verify(fireStationRepository, times(1)).save(Mockito.any(FireStation.class));
+    }
+    @Test
+    void deleteOneFireStationTest() throws Exception {
         FireStation fireStation = new FireStation("1509 Culver St", "3");
         doNothing().when(fireStationRepository).delete(fireStation);
 
@@ -85,7 +97,21 @@ class FireStationControllerTest {
     }
 
     @Test
-    void updateOneFireStation() throws Exception {
+    void deleteOneFireStationTest_Exception() throws Exception {
+        FireStation fireStation = new FireStation("1509 Culver St", "1");
+        doThrow(new RuntimeException("Delete operation failed")).when(fireStationRepository).delete(Mockito.any(FireStation.class));
+
+        mockMvc.perform(delete("/firestation")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(fireStation)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to delete fire station."));
+
+        verify(fireStationRepository, times(1)).delete(Mockito.any(FireStation.class));
+    }
+
+    @Test
+    void updateOneFireStationTest() throws Exception {
         FireStation fireStation = new FireStation("1509 Culver St", "3");
         doNothing().when(fireStationRepository).update(fireStation);
 
@@ -99,7 +125,20 @@ class FireStationControllerTest {
     }
 
     @Test
-    void getPersonsByStation() throws Exception {
+    void updateOneFireStationTest_Exception() throws Exception {
+        FireStation fireStation = new FireStation("1509 Culver St", "1");
+        doThrow(new RuntimeException("Update operation failed")).when(fireStationRepository).update(Mockito.any(FireStation.class));
+
+        mockMvc.perform(put("/firestation")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(fireStation)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to update fire station."));
+
+        verify(fireStationRepository, times(1)).update(Mockito.any(FireStation.class));
+    }
+    @Test
+    void getPersonsByStationTest() throws Exception {
         String stationNumber = "1";
         Map<String, Object> response = Map.of(
                 "adults", 2,
@@ -123,4 +162,5 @@ class FireStationControllerTest {
 
         verify(fireStationService, times(1)).getPersonsByStation(stationNumber);
     }
+
 }

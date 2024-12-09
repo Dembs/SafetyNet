@@ -35,9 +35,6 @@ public class ChildAlertController {
         } catch (IllegalArgumentException e) {
             log.error("Invalid address provided: {}", address, e);
             throw e;
-        } catch (Exception e) {
-            log.error("Unexpected error occurred while fetching children at address: {}", address, e);
-            throw e;
         }
     }
 }
