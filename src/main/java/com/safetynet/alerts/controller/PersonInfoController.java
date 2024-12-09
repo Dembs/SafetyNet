@@ -32,9 +32,6 @@ public class PersonInfoController {
         } catch (IllegalArgumentException e) {
             log.error("Invalid last name provided: {}", lastName, e);
             throw e;
-        } catch (Exception e) {
-            log.error("Unexpected error occurred while fetching persons with last name: {}", lastName, e);
-            throw e;
         }
     }
 }

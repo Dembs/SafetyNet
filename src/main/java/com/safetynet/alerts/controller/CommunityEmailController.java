@@ -30,9 +30,6 @@ public class CommunityEmailController {
         } catch (IllegalArgumentException e) {
             log.error("Invalid city provided: {}", city, e);
             throw e;
-        } catch (Exception e) {
-            log.error("Unexpected error occurred while fetching emails for city: {}", city, e);
-            throw e;
         }
     }
 }

@@ -50,6 +50,7 @@ class PersonControllerTest {
         verify(personRepository, times(1)).findAll();
     }
 
+
     @Test
     void addOnePersonTest() throws Exception {
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
@@ -65,6 +66,21 @@ class PersonControllerTest {
     }
 
     @Test
+    void addOnePersonTest_Exception() throws Exception {
+        Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
+        doThrow(new RuntimeException("Database error")).when(personRepository).save(Mockito.any(Person.class));
+
+        mockMvc.perform(post("/person")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(person)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to add the person."));
+
+        verify(personRepository, times(1)).save(Mockito.any(Person.class));
+    }
+
+
+    @Test
     void deleteOnePersonTest() throws Exception {
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
         doNothing().when(personRepository).delete(person);
@@ -77,7 +93,19 @@ class PersonControllerTest {
 
         verify(personRepository, times(1)).delete(Mockito.any(Person.class));
     }
+    @Test
+    void deleteOnePersonTest_Exception() throws Exception {
+        Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
+        doThrow(new RuntimeException("Database error")).when(personRepository).delete(Mockito.any(Person.class));
 
+        mockMvc.perform(delete("/person")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(person)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to delete the person."));
+
+        verify(personRepository, times(1)).delete(Mockito.any(Person.class));
+    }
     @Test
     void updateOnePersonTest() throws Exception {
 
@@ -89,6 +117,20 @@ class PersonControllerTest {
                        .content(objectMapper.writeValueAsString(person)))
                .andExpect(status().isOk())
                .andExpect(content().string("Person updated successfully"));
+
+        verify(personRepository, times(1)).update(Mockito.any(Person.class));
+    }
+
+    @Test
+    void updateOnePersonTest_Exception() throws Exception {
+        Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
+        doThrow(new RuntimeException("Database error")).when(personRepository).update(Mockito.any(Person.class));
+
+        mockMvc.perform(put("/person")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(person)))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Failed to update the person."));
 
         verify(personRepository, times(1)).update(Mockito.any(Person.class));
     }

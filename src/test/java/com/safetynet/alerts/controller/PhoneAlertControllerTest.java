@@ -38,5 +38,15 @@ class PhoneAlertControllerTest {
                .andExpect(jsonPath("$[0]").value("123-456-7890"))
                .andExpect(jsonPath("$[1]").value("987-654-3210"));
     }
+    @Test
+    void getPhoneNumbers_EmptyResponseTest() throws Exception {
+        String fireStationNumber = "2";
 
+        when(phoneAlertService.getPhoneNumbersByFireStation(fireStationNumber)).thenReturn(List.of());
+
+        mockMvc.perform(get("/phoneAlert")
+                       .param("firestation", fireStationNumber))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$").isEmpty());
+    }
 }

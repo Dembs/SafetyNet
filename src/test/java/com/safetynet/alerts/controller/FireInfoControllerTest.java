@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,20 @@ class FireInfoControllerTest {
                .andExpect(jsonPath("$.residents.length()").value(2))
                .andExpect(jsonPath("$.residents[0].firstName").value("John"))
                .andExpect(jsonPath("$.residents[1].age").value(10));
+    }
+    @Test
+    void getResidentsByAddress_EmptyResponseTest() throws Exception {
+        String address = "123 test";
+        Map<String, Object> emptyResponse = new HashMap<>();
+        emptyResponse.put("fireStationNumber", null);
+        emptyResponse.put("residents", List.of());
+
+        when(fireInfoService.getResidentsByAddress(address)).thenReturn(emptyResponse);
+
+        mockMvc.perform(get("/fire").param("address", address))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.fireStationNumber").doesNotExist())
+               .andExpect(jsonPath("$.residents").isEmpty());
     }
 }
 

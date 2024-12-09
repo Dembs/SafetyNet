@@ -46,5 +46,14 @@ class PersonInfoControllerTest {
                .andExpect(jsonPath("$[1].age").value(25));
     }
 
+    @Test
+    void getPersonsByLastName_EmptyResponseTest() throws Exception {
+        String lastName = "123 test";
+        when(personInfoService.getPersonsByLastName(lastName)).thenReturn(List.of());
+
+        mockMvc.perform(get("/personInfo").param("lastName", lastName))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$").isEmpty());
+    }
 
 }
