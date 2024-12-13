@@ -60,7 +60,7 @@ public class MedicalRecordController {
             log.debug("Medical record deleted: {}", medicalRecord);
             log.info("Medical record deleted successfully for: {} {}", 
                 medicalRecord.getFirstName(), medicalRecord.getLastName());
-            return ResponseEntity.ok().body("{}");
+            return ResponseEntity.ok().body(medicalRecord);
         } catch (Exception e) {
             log.error("Error occurred while deleting medical record: {}", medicalRecord, e);
             return ResponseEntity.badRequest().body("Failed to delete medical record.");
@@ -82,7 +82,7 @@ public class MedicalRecordController {
             log.debug("Medical record updated: {}", medicalRecord);
             log.info("Medical record updated successfully for: {} {}", 
                 medicalRecord.getFirstName(), medicalRecord.getLastName());
-            return ResponseEntity.ok().body("{}");
+            return ResponseEntity.ok().body(medicalRecord);
         } catch (Exception e) {
             log.error("Error occurred while updating medical record: {}", medicalRecord, e);
             return ResponseEntity.badRequest().body("Failed to update medical record.");

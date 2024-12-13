@@ -85,8 +85,7 @@ public class MedicalRecordControllerIT {
         mockMvc.perform(put("/medicalRecord")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(updatedMedicalRecord))
-               .andExpect(status().isOk())
-               .andExpect(content().string("{}"));
+               .andExpect(status().isOk());
     }
 
     @Test
@@ -127,8 +126,7 @@ public class MedicalRecordControllerIT {
         mockMvc.perform(delete("/medicalRecord")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(medicalRecordToDelete))
-               .andExpect(status().isOk())
-               .andExpect(content().string("{}"));
+               .andExpect(status().isOk());
     }
 
     @Test

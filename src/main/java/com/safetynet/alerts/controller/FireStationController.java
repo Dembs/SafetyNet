@@ -63,7 +63,7 @@ public class FireStationController {
             fireStationRepository.delete(fireStation);
             log.debug("Fire station deleted: {}", fireStation);
             log.info("Fire station deleted successfully: {}", fireStation);
-            return ResponseEntity.ok().body("{}");
+            return ResponseEntity.ok().body(fireStation);
         } catch (Exception e) {
             log.error("Error occurred while deleting fire station: {}", fireStation, e);
             return ResponseEntity.badRequest().body("Failed to delete fire station.");
@@ -82,7 +82,7 @@ public class FireStationController {
             fireStationRepository.update(fireStation);
             log.debug("Fire station updated: {}", fireStation);
             log.info("Fire station updated successfully: {}", fireStation);
-            return ResponseEntity.ok().body("{}");
+            return ResponseEntity.ok().body(fireStation);
         } catch (Exception e) {
             log.error("Error occurred while updating fire station: {}", fireStation, e);
             return ResponseEntity.badRequest().body("Failed to update fire station.");

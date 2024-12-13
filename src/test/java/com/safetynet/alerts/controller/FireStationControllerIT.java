@@ -66,8 +66,7 @@ public class FireStationControllerIT {
         mockMvc.perform(delete("/firestation")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(fireStationToDelete))
-               .andExpect(status().isOk())
-               .andExpect(content().string("{}"));
+               .andExpect(status().isOk());
     }
 
     @Test
@@ -82,8 +81,7 @@ public class FireStationControllerIT {
         mockMvc.perform(put("/firestation")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(updatedFireStation))
-               .andExpect(status().isOk())
-               .andExpect(content().string("{}"));
+               .andExpect(status().isOk());
     }
 
     @Test
