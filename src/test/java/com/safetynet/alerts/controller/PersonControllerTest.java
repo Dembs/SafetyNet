@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -83,55 +84,96 @@ class PersonControllerTest {
     @Test
     void deleteOnePersonTest() throws Exception {
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
+        when(personRepository.findPerson(person.getFirstName(), person.getLastName())).thenReturn(Optional.of(person));
         doNothing().when(personRepository).delete(person);
 
         mockMvc.perform(delete("/person")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(person)))
                .andExpect(status().isOk())
-               .andExpect(content().string("Person deleted successfully"));
+               .andExpect(jsonPath("$.firstName").value("Jane"))
+               .andExpect(jsonPath("$.lastName").value("Smith"));
 
-        verify(personRepository, times(1)).delete(Mockito.any(Person.class));
+        verify(personRepository, times(1)).delete(person);
+        verify(personRepository, times(1)).findPerson(person.getFirstName(), person.getLastName());
     }
+
     @Test
-    void deleteOnePersonTest_Exception() throws Exception {
+    void deleteOnePersonTest_PersonNotFound() throws Exception {
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
-        doThrow(new RuntimeException("Database error")).when(personRepository).delete(Mockito.any(Person.class));
+        when(personRepository.findPerson(person.getFirstName(), person.getLastName())).thenReturn(Optional.empty());
 
         mockMvc.perform(delete("/person")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(person)))
                .andExpect(status().isOk())
+               .andExpect(content().json("{}"));
+
+        verify(personRepository, never()).delete(any(Person.class));
+        verify(personRepository, times(1)).findPerson(person.getFirstName(), person.getLastName());
+    }
+
+    @Test
+    void deleteOnePersonTest_Exception() throws Exception {
+        Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
+        when(personRepository.findPerson(person.getFirstName(), person.getLastName())).thenReturn(Optional.of(person));
+        doThrow(new RuntimeException("Database error")).when(personRepository).delete(any(Person.class));
+
+        mockMvc.perform(delete("/person")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(person)))
+               .andExpect(status().isBadRequest())
                .andExpect(content().string("Failed to delete the person."));
 
-        verify(personRepository, times(1)).delete(Mockito.any(Person.class));
+        verify(personRepository, times(1)).delete(any(Person.class));
+        verify(personRepository, times(1)).findPerson(person.getFirstName(), person.getLastName());
     }
+
     @Test
     void updateOnePersonTest() throws Exception {
-
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
+        when(personRepository.findPerson(person.getFirstName(), person.getLastName())).thenReturn(Optional.of(person));
         doNothing().when(personRepository).update(person);
 
         mockMvc.perform(put("/person")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(person)))
                .andExpect(status().isOk())
-               .andExpect(content().string("Person updated successfully"));
+               .andExpect(jsonPath("$.firstName").value("Jane"))
+               .andExpect(jsonPath("$.lastName").value("Smith"));
 
-        verify(personRepository, times(1)).update(Mockito.any(Person.class));
+        verify(personRepository, times(1)).update(person);
+        verify(personRepository, times(1)).findPerson(person.getFirstName(), person.getLastName());
     }
 
     @Test
-    void updateOnePersonTest_Exception() throws Exception {
+    void updateOnePersonTest_PersonNotFound() throws Exception {
         Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
-        doThrow(new RuntimeException("Database error")).when(personRepository).update(Mockito.any(Person.class));
+        when(personRepository.findPerson(person.getFirstName(), person.getLastName())).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/person")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(person)))
                .andExpect(status().isOk())
+               .andExpect(content().json("{}"));
+
+        verify(personRepository, never()).update(any(Person.class));
+        verify(personRepository, times(1)).findPerson(person.getFirstName(), person.getLastName());
+    }
+
+    @Test
+    void updateOnePersonTest_Exception() throws Exception {
+        Person person = new Person("Jane", "Smith", "29 15th St", "Culver", 90230, "jane.smith@email.com", "841-874-6513");
+        when(personRepository.findPerson(person.getFirstName(), person.getLastName())).thenReturn(Optional.of(person));
+        doThrow(new RuntimeException("Database error")).when(personRepository).update(any(Person.class));
+
+        mockMvc.perform(put("/person")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(person)))
+               .andExpect(status().isBadRequest())
                .andExpect(content().string("Failed to update the person."));
 
-        verify(personRepository, times(1)).update(Mockito.any(Person.class));
+        verify(personRepository, times(1)).update(any(Person.class));
+        verify(personRepository, times(1)).findPerson(person.getFirstName(), person.getLastName());
     }
 }

@@ -5,10 +5,12 @@ import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.service.FireStationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -50,30 +52,40 @@ public class FireStationController {
     }
 
     @DeleteMapping
-    public String deleteOneFireStation(@RequestBody FireStation fireStation) {
+    public ResponseEntity<Object> deleteOneFireStation(@RequestBody FireStation fireStation) {
         log.info("Received request to delete fire station: {}", fireStation);
         try {
+            Optional<FireStation> existingStation = fireStationRepository.findByAddress(fireStation.getAddress());
+            if (!existingStation.isPresent()) {
+                log.info("Fire station not found for address: {}", fireStation.getAddress());
+                return ResponseEntity.ok().body("{}");
+            }
             fireStationRepository.delete(fireStation);
             log.debug("Fire station deleted: {}", fireStation);
             log.info("Fire station deleted successfully: {}", fireStation);
-            return "Fire Station deleted successfully";
+            return ResponseEntity.ok().body("{}");
         } catch (Exception e) {
             log.error("Error occurred while deleting fire station: {}", fireStation, e);
-            return "Failed to delete fire station.";
+            return ResponseEntity.badRequest().body("Failed to delete fire station.");
         }
     }
 
     @PutMapping
-    public String updateOneFireStation(@RequestBody FireStation fireStation) {
+    public ResponseEntity<Object> updateOneFireStation(@RequestBody FireStation fireStation) {
         log.info("Received request to update fire station: {}", fireStation);
         try {
+            Optional<FireStation> existingStation = fireStationRepository.findByAddress(fireStation.getAddress());
+            if (!existingStation.isPresent()) {
+                log.info("Fire station not found for address: {}", fireStation.getAddress());
+                return ResponseEntity.ok().body("{}");
+            }
             fireStationRepository.update(fireStation);
             log.debug("Fire station updated: {}", fireStation);
             log.info("Fire station updated successfully: {}", fireStation);
-            return "Fire Station updated successfully";
+            return ResponseEntity.ok().body("{}");
         } catch (Exception e) {
             log.error("Error occurred while updating fire station: {}", fireStation, e);
-            return "Failed to update fire station.";
+            return ResponseEntity.badRequest().body("Failed to update fire station.");
         }
     }
 

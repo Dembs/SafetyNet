@@ -40,7 +40,6 @@ public class PersonControllerIT {
 
     @Test
     void addOnePersonIT() throws Exception {
-        Person person = new Person("TestFirstName", "TestLastName", "123 Test St", "TestCity", 12345, "123-456-7890", "test@example.com");
         String personJson = """
                 {
                     "firstName": "TestFirstName",
@@ -62,29 +61,27 @@ public class PersonControllerIT {
 
     @Test
     void updateOnePersonIT() throws Exception {
-        Person updatedPerson = new Person("UpdatedFirstName", "UpdatedLastName", "456 Updated St", "UpdatedCity", 54321, "987-654-3210", "updated@example.com");
-        String updatedPersonJson = """
+        String updatedPerson = """
                 {
-                    "firstName": "UpdatedFirstName",
-                    "lastName": "UpdatedLastName",
-                    "address": "456 Updated St",
-                    "city": "UpdatedCity",
-                    "zip": 54321,
-                    "phone": "987-654-3210",
-                    "email": "updated@example.com"
+                    "firstName": "Test",
+                    "lastName": "Test",
+                    "address": "1509 Culver St",
+                    "city": "Culver",
+                    "zip": "97451",
+                    "phone": "841-874-6512",
+                    "email": "jaboyd@email.com"
                 }
                 """;
 
         mockMvc.perform(put("/person")
                        .contentType(MediaType.APPLICATION_JSON)
-                       .content(updatedPersonJson))
+                       .content(updatedPerson))
                .andExpect(status().isOk())
-               .andExpect(content().string(containsString("Person updated successfully")));
+               .andExpect(content().string("{}"));
     }
 
     @Test
     void deleteOnePersonIT() throws Exception {
-        Person personToDelete = new Person("DeleteFirstName", "DeleteLastName", "789 Delete St", "DeleteCity", 98765, "321-654-0987", "delete@example.com");
         String personToDeleteJson = """
                 {
                     "firstName": "DeleteFirstName",
@@ -101,6 +98,6 @@ public class PersonControllerIT {
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(personToDeleteJson))
                .andExpect(status().isOk())
-               .andExpect(content().string(containsString("Person deleted successfully")));
+               .andExpect(content().string("{}"));
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,40 +57,96 @@ public class MedicalRecordControllerIT {
     }
 
     @Test
-    void updateOneMedicalRecordIT() throws Exception {
-        String updatedMedicalRecordJson = """
+    void updateOneMedicalRecordIT_Success() throws Exception {
+        String initialMedicalRecordJson = """
                 {
-                    "firstName": "UpdatedFirstName",
-                    "lastName": "UpdatedLastName",
+                    "firstName": "UpdateTest",
+                    "lastName": "UpdateLastName",
                     "birthdate": "02/02/1990",
-                    "medications": ["updatedMed1:300mg"],
-                    "allergies": ["updatedAllergy1"]
+                    "medications": ["aspirin:500mg"],
+                    "allergies": ["pollen"]
+                }
+                """;
+
+        mockMvc.perform(post("/medicalRecord")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(initialMedicalRecordJson));
+
+        String updatedMedicalRecord = """
+                {
+                    "firstName": "John",
+                    "lastName": "Boyd",
+                    "birthdate": "03/06/1984",
+                    "medications": ["aznol:350mg", "hydrapermazol:100mg"],
+                    "allergies": ["nillacilan"]
                 }
                 """;
 
         mockMvc.perform(put("/medicalRecord")
                        .contentType(MediaType.APPLICATION_JSON)
-                       .content(updatedMedicalRecordJson))
+                       .content(updatedMedicalRecord))
                .andExpect(status().isOk())
-               .andExpect(content().string(containsString("MedicalRecord updated successfully")));
+               .andExpect(content().string("{}"));
     }
 
     @Test
-    void deleteOneMedicalRecordIT() throws Exception {
-        String medicalRecordToDeleteJson = """
+    void updateOneMedicalRecordIT_NonExistent() throws Exception {
+        String nonExistentMedicalRecord = """
                 {
-                    "firstName": "DeleteFirstName",
-                    "lastName": "DeleteLastName",
-                    "birthdate": "03/03/1980",
-                    "medications": ["deleteMed1:100mg"],
-                    "allergies": ["deleteAllergy1"]
+                    "firstName": "NonExistent",
+                    "lastName": "Person",
+                    "birthdate": "01/01/1990",
+                    "medications": [],
+                    "allergies": []
+                }
+                """;
+
+        mockMvc.perform(put("/medicalRecord")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(nonExistentMedicalRecord))
+               .andExpect(status().isOk())
+               .andExpect(content().string("{}"));
+    }
+
+    @Test
+    void deleteOneMedicalRecordIT_Success() throws Exception {
+        String medicalRecordToDelete = """
+                {
+                    "firstName": "John",
+                    "lastName": "Boyd",
+                    "birthdate": "03/06/1984",
+                    "medications": ["aznol:350mg", "hydrapermazol:100mg"],
+                    "allergies": ["nillacilan"]
+                }
+                """;
+
+        mockMvc.perform(post("/medicalRecord")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(medicalRecordToDelete));
+
+        mockMvc.perform(delete("/medicalRecord")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(medicalRecordToDelete))
+               .andExpect(status().isOk())
+               .andExpect(content().string("{}"));
+    }
+
+    @Test
+    void deleteOneMedicalRecordIT_NonExistent() throws Exception {
+        String nonExistentMedicalRecord = """
+                {
+                    "firstName": "NonExistent",
+                    "lastName": "Person",
+                    "birthdate": "01/01/1990",
+                    "medications": [],
+                    "allergies": []
                 }
                 """;
 
         mockMvc.perform(delete("/medicalRecord")
                        .contentType(MediaType.APPLICATION_JSON)
-                       .content(medicalRecordToDeleteJson))
+                       .content(nonExistentMedicalRecord))
                .andExpect(status().isOk())
-               .andExpect(content().string(containsString("MedicalRecord deleted successfully")));
+               .andExpect(content().string("{}"));
     }
 }

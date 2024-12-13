@@ -4,9 +4,11 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for managing persons.
@@ -58,16 +60,21 @@ public class PersonController {
      * Deletes an existing person from the repository.
      */
     @DeleteMapping
-    public String deleteOnePerson(@RequestBody Person person) {
+    public ResponseEntity<Object> deleteOnePerson(@RequestBody Person person) {
         log.info("Received request to delete person: {}", person);
         try {
+            Optional<Person> existingPerson = personRepository.findPerson(person.getFirstName(), person.getLastName());
+            if (!existingPerson.isPresent()) {
+                log.info("Person not found: {} {}", person.getFirstName(), person.getLastName());
+                return ResponseEntity.ok().body("{}");
+            }
             personRepository.delete(person);
             log.debug("Person deleted: {}", person);
-            log.info("Person deleted successfully: {} {}", person.getFirstName(), person.getLastName());
-            return "Person deleted successfully";
+            log.info("Person deleted successfully");
+            return ResponseEntity.ok().body(person);
         } catch (Exception e) {
             log.error("Error occurred while deleting person: {}", person, e);
-            return "Failed to delete the person.";
+            return ResponseEntity.badRequest().body("Failed to delete the person.");
         }
     }
 
@@ -75,16 +82,21 @@ public class PersonController {
      * Updates an existing person's details in the repository.
      */
     @PutMapping
-    public String updateOnePerson(@RequestBody Person person) {
+    public ResponseEntity<Object> updateOnePerson(@RequestBody Person person) {
         log.info("Received request to update person: {}", person);
         try {
+            Optional<Person> existingPerson = personRepository.findPerson(person.getFirstName(), person.getLastName());
+            if (!existingPerson.isPresent()) {
+                log.info("Person not found: {} {}", person.getFirstName(), person.getLastName());
+                return ResponseEntity.ok().body("{}");
+            }
             personRepository.update(person);
             log.debug("Person updated: {}", person);
-            log.info("Person updated successfully: {} {}", person.getFirstName(), person.getLastName());
-            return "Person updated successfully";
+            log.info("Person updated successfully");
+            return ResponseEntity.ok().body(person);
         } catch (Exception e) {
             log.error("Error occurred while updating person: {}", person, e);
-            return "Failed to update the person.";
+            return ResponseEntity.badRequest().body("Failed to update the person.");
         }
     }
 }

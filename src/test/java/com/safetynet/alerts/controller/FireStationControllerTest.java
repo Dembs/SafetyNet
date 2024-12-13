@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -82,61 +83,101 @@ class FireStationControllerTest {
 
         verify(fireStationRepository, times(1)).save(Mockito.any(FireStation.class));
     }
+
     @Test
     void deleteOneFireStationTest() throws Exception {
         FireStation fireStation = new FireStation("1509 Culver St", "3");
+        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(Optional.of(fireStation));
         doNothing().when(fireStationRepository).delete(fireStation);
 
         mockMvc.perform(delete("/firestation")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(fireStation)))
                .andExpect(status().isOk())
-               .andExpect(content().string("Fire Station deleted successfully"));
+               .andExpect(content().json("{}"));
 
-        verify(fireStationRepository, times(1)).delete(Mockito.any(FireStation.class));
+        verify(fireStationRepository, times(1)).delete(fireStation);
+        verify(fireStationRepository, times(1)).findByAddress(fireStation.getAddress());
     }
 
     @Test
-    void deleteOneFireStationTest_Exception() throws Exception {
-        FireStation fireStation = new FireStation("1509 Culver St", "1");
-        doThrow(new RuntimeException("Delete operation failed")).when(fireStationRepository).delete(Mockito.any(FireStation.class));
+    void deleteOneFireStationTest_StationNotFound() throws Exception {
+        FireStation fireStation = new FireStation("1509 Culver St", "3");
+        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(Optional.empty());
 
         mockMvc.perform(delete("/firestation")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(fireStation)))
                .andExpect(status().isOk())
+               .andExpect(content().json("{}"));
+
+        verify(fireStationRepository, never()).delete(any(FireStation.class));
+        verify(fireStationRepository, times(1)).findByAddress(fireStation.getAddress());
+    }
+
+    @Test
+    void deleteOneFireStationTest_Exception() throws Exception {
+        FireStation fireStation = new FireStation("1509 Culver St", "3");
+        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(Optional.of(fireStation));
+        doThrow(new RuntimeException("Database error")).when(fireStationRepository).delete(any(FireStation.class));
+
+        mockMvc.perform(delete("/firestation")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(fireStation)))
+               .andExpect(status().isBadRequest())
                .andExpect(content().string("Failed to delete fire station."));
 
-        verify(fireStationRepository, times(1)).delete(Mockito.any(FireStation.class));
+        verify(fireStationRepository, times(1)).delete(any(FireStation.class));
+        verify(fireStationRepository, times(1)).findByAddress(fireStation.getAddress());
     }
 
     @Test
     void updateOneFireStationTest() throws Exception {
         FireStation fireStation = new FireStation("1509 Culver St", "3");
+        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(Optional.of(fireStation));
         doNothing().when(fireStationRepository).update(fireStation);
 
         mockMvc.perform(put("/firestation")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(fireStation)))
                .andExpect(status().isOk())
-               .andExpect(content().string("Fire Station updated successfully"));
+               .andExpect(content().json("{}"));
 
-        verify(fireStationRepository, times(1)).update(Mockito.any(FireStation.class));
+        verify(fireStationRepository, times(1)).update(fireStation);
+        verify(fireStationRepository, times(1)).findByAddress(fireStation.getAddress());
     }
 
     @Test
-    void updateOneFireStationTest_Exception() throws Exception {
-        FireStation fireStation = new FireStation("1509 Culver St", "1");
-        doThrow(new RuntimeException("Update operation failed")).when(fireStationRepository).update(Mockito.any(FireStation.class));
+    void updateOneFireStationTest_StationNotFound() throws Exception {
+        FireStation fireStation = new FireStation("1509 Culver St", "3");
+        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/firestation")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(objectMapper.writeValueAsString(fireStation)))
                .andExpect(status().isOk())
+               .andExpect(content().json("{}"));
+
+        verify(fireStationRepository, never()).update(any(FireStation.class));
+        verify(fireStationRepository, times(1)).findByAddress(fireStation.getAddress());
+    }
+
+    @Test
+    void updateOneFireStationTest_Exception() throws Exception {
+        FireStation fireStation = new FireStation("1509 Culver St", "3");
+        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(Optional.of(fireStation));
+        doThrow(new RuntimeException("Database error")).when(fireStationRepository).update(any(FireStation.class));
+
+        mockMvc.perform(put("/firestation")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content(objectMapper.writeValueAsString(fireStation)))
+               .andExpect(status().isBadRequest())
                .andExpect(content().string("Failed to update fire station."));
 
-        verify(fireStationRepository, times(1)).update(Mockito.any(FireStation.class));
+        verify(fireStationRepository, times(1)).update(any(FireStation.class));
+        verify(fireStationRepository, times(1)).findByAddress(fireStation.getAddress());
     }
+
     @Test
     void getPersonsByStationTest() throws Exception {
         String stationNumber = "1";
